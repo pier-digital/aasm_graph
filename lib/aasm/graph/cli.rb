@@ -18,7 +18,14 @@ module AASM
           end
           klass.aasm.events.each do |event|
             event.transitions.each do |transition|
-              edges << "#{transition.from} -> #{transition.to} [ label = \"#{event.name}\" ];\n"
+              if transition.from
+                edges << "#{transition.from} -> #{transition.to} [ label = \"#{event.name}\" ];\n"
+              else
+                # for transitions with omitted `from`
+                klass.aasm.states.each do |state|
+                  edges << "#{state} -> #{transition.to} [ label = \"#{event.name}\" ];\n"
+                end
+              end
             end
           end
 
